@@ -1,0 +1,40 @@
+{
+  "name": "lazystream.ts",
+  "version": "0.5.4",
+  "description": "LazyStream.TS provides an easy way to work with collections in FP-like and SQL-like styles.",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "prepare": "npm run build",
+    "version": "npm run format && git add -A src"
+  },
+  "repository": {
+    "tyoe": "git",
+    "url": "git+https://github.com/sergeyrassokhin/lazystream.ts"
+  },
+  "files": [
+    "lib/**/*"
+  ],
+  "keywords": [
+    "TypeScript",
+    "Collections",
+    "Streams",
+    "Lazy",
+    "Java8",
+    "LINQ"
+  ],
+  "author": "Sergey Rassokhin",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/jest": "^25.1.4",
+    "jest": "^25.1.0",
+    "ts-jest": "^25.2.1",
+    "typedoc": "^0.17.0",
+    "typedoc-plugin-markdown": "^2.2.17",
+    "typescript": "^3.8.3"
+  }
+}
+
+
