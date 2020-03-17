@@ -137,8 +137,8 @@ export type JoinEntry<L, R, JoinTypeT extends JoinType> =
  * ```
  * Types can be primitives (as in the example above) but can also be Objects, so SQL-like instructions can be used:
  * ```
- * const userObjects: Array<{name: string, age: number, city: string}> = ...
- * const usersByCity = new Stream()
+ * const users: Array<{name: string, age: number, city: string}> = ...
+ * const usersByCity = new Stream(users)
  *   .where("age", ">=", 25)
  *   .groupBy("city")
  *   .toArray();

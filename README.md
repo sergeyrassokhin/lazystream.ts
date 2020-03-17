@@ -18,8 +18,8 @@ const evenSquares = new Stream(numbers)
 ```
 Types can be primitives (as in the example above) but can also be Objects, so SQL-like instructions can be used:
 ```
-const userObjects: Array<{name: string, age: number, city: string}> = ...
-const usersByCity = new Stream()
+const users: Array<{name: string, age: number, city: string}> = ...
+const usersByCity = new Stream(users)
   .where("age", ">=", 25)
   .groupBy("city")
   .toArray();
@@ -62,7 +62,7 @@ Type of elements in the stream. Can be any type including Object, primitives, It
 
 \+ **new Stream**(`iterableOrIteratorFactory`: Iterable‹T› | function): *Stream*
 
-*Defined in [index.ts:149](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L149)*
+*Defined in [index.ts:149](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L149)*
 
 Creates a new instance of Stream by wrapping existing `Iterable<T>` or just a function that returns
 `Iterator<T>` (so generator function can be passed as well). For example:
@@ -93,7 +93,7 @@ Name | Type | Description |
 
 ▸ **[Symbol.iterator]**(): *Iterator‹T›*
 
-*Defined in [index.ts:179](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L179)*
+*Defined in [index.ts:179](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L179)*
 
 **Returns:** *Iterator‹T›*
 
@@ -103,7 +103,7 @@ ___
 
 ▸ **filter**(`predicate`: function): *Stream‹T›*
 
-*Defined in [index.ts:210](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L210)*
+*Defined in [index.ts:210](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L210)*
 
 Filters elements given a predicate function.
 Example of usage:
@@ -137,7 +137,7 @@ ___
 
 ▸ **flat**(`this`: Stream‹Iterable‹any››): *Stream‹T extends Iterable<infer E> ? E : never›*
 
-*Defined in [index.ts:238](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L238)*
+*Defined in [index.ts:238](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L238)*
 
 Flattens elements of this `Stream<Iterable<T>>` into `Stream<T>`.
 Example of usage:
@@ -163,7 +163,7 @@ ___
 
 ▸ **flatMap**<**K**>(`field`: K): *Stream‹Val<T, K> extends Iterable<infer E> ? E : never›*
 
-*Defined in [index.ts:259](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L259)*
+*Defined in [index.ts:259](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L259)*
 
 First maps elements of `Stream<T>` to `Stream<Iterable<R>>` and then flattens into `Stream<R>`. For example:
 ```
@@ -193,7 +193,7 @@ ___
 
 ▸ **forEach**(`fn`: Fn‹T›): *void*
 
-*Defined in [index.ts:562](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L562)*
+*Defined in [index.ts:562](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L562)*
 
 Fetches all elements from the stream and executes given function for each element.
 Example of usage:
@@ -219,7 +219,7 @@ ___
 
 ▸ **groupBy**<**K**>(`keyFieldOrFn?`: K): *Stream‹object›*
 
-*Defined in [index.ts:516](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L516)*
+*Defined in [index.ts:516](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L516)*
 
 Mimics SQL GROUP BY operator. Groups elements with the same given key. Keys must be in a sorted order, otherwise
 will raise an exception. Next element is emitted only once the element with the next key appears in the stream.
@@ -255,7 +255,7 @@ ___
 
 ▸ **join**<**O**, **KC**, **KL**, **KR**, **JT**>(`other`: Iterable‹O›, `params`: object): *Stream‹JoinEntry‹T, O, JT››*
 
-*Defined in [index.ts:369](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L369)*
+*Defined in [index.ts:369](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L369)*
 
 Mimics SQL JOIN operator. Depending on type of join, for each element of source stream lookups a corresponding
 element from joined stream, using join parameter that can either be a field, or a function.
@@ -324,7 +324,7 @@ ___
 
 ▸ **last**(): *T*
 
-*Defined in [index.ts:638](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L638)*
+*Defined in [index.ts:638](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L638)*
 
 Fetches all elements from the stream and returns the last element.
 Example of usage:
@@ -341,7 +341,7 @@ ___
 
 ▸ **map**<**R**>(`mapFn`: function): *Stream‹R›*
 
-*Defined in [index.ts:225](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L225)*
+*Defined in [index.ts:225](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L225)*
 
 Maps each element of a current stream with a mapper function and returns new Stream of newly created elements.
 Example of usage:
@@ -380,7 +380,7 @@ ___
 
 ▸ **max**(`this`: Stream‹number›): *number*
 
-*Defined in [index.ts:664](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L664)*
+*Defined in [index.ts:664](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L664)*
 
 Fetches all elements from the stream and returns the maximal one.
 Example of usage:
@@ -404,7 +404,7 @@ ___
 
 ▸ **min**(`this`: Stream‹number›): *number*
 
-*Defined in [index.ts:651](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L651)*
+*Defined in [index.ts:651](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L651)*
 
 Fetches all elements from the stream and returns the minimal one.
 Example of usage:
@@ -428,7 +428,7 @@ ___
 
 ▸ **reduce**<**R**>(`reduceFn`: function): *R*
 
-*Defined in [index.ts:618](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L618)*
+*Defined in [index.ts:618](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L618)*
 
 Fetches all elements from the stream and recursively applies `reduceFn` to each element providing previous result
 to each call.
@@ -468,7 +468,7 @@ ___
 
 ▸ **select**<**U1**, **U2**>(`field1`: U1, ...`field2`: U2[]): *Stream‹[U2] extends [never] ? T[U1] : object›*
 
-*Defined in [index.ts:283](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L283)*
+*Defined in [index.ts:283](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L283)*
 
 Mimics SQL SELECT operator, by restricting set of fields that need be returned. Accepts list of field names, and
 returns objects with only those fields, for example:
@@ -501,7 +501,7 @@ ___
 
 ▸ **toArray**(): *Array‹T›*
 
-*Defined in [index.ts:571](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L571)*
+*Defined in [index.ts:571](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L571)*
 
 Fetches all elements from the stream and collect them int `Array<T>`.
 
@@ -513,7 +513,7 @@ ___
 
 ▸ **toMap**<**K**, **V**>(`key`: K, `val?`: V): *Map‹Val‹T, K›, Val‹T, V››*
 
-*Defined in [index.ts:594](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L594)*
+*Defined in [index.ts:594](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L594)*
 
 Fetches all elements from the stream and collect them int `Map<K, V>`.
 Example of usage:
@@ -545,7 +545,7 @@ ___
 
 ▸ **where**<**K**>(`field`: K, `compareOp`: ComparisonOp, `value`: Val‹T, K›): *Stream‹T›*
 
-*Defined in [index.ts:314](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L314)*
+*Defined in [index.ts:314](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L314)*
 
 Mimics SQL WHERE clause, by including only the records that satisfy given parameters.
 Example of usages:
@@ -580,7 +580,7 @@ Name | Type | Description |
 
 ▸ **from**<**T**>(`first`: Iterable‹T›, `second`: Iterable‹T›, ...`rest`: Iterable‹T›[]): *Stream‹T[]›*
 
-*Defined in [index.ts:21](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L21)*
+*Defined in [index.ts:21](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L21)*
 
 Cross-multiplies multiple `Iterable's` of the same type T into `Stream<T[]>`. Can accept any number of args.
 This function can be used as a shortcut - `from(someIterable)` instead of `new Stream(someIterable)`.
@@ -612,7 +612,7 @@ ___
 
 ▸ **range**(`from`: number, `to`: number): *Stream‹number›*
 
-*Defined in [index.ts:60](https://github.com/sergeyrassokhin/lazystream.ts/blob/ea5d4c3/src/index.ts#L60)*
+*Defined in [index.ts:60](https://github.com/sergeyrassokhin/lazystream.ts/blob/master/src/index.ts#L60)*
 
 Creates a `Stream<number>` with all numbers from the range.
 Example of usage:
