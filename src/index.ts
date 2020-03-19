@@ -76,12 +76,49 @@ export type ComparisonOp = "<" | ">" | "<=" | ">=" | "==" | "!=";
  * Join type.
  */
 export enum JoinType {
-  // DESC-sorted joins
-  INNER_DESC = 0, LEFT_DESC = 1, RIGHT_DESC = 2, FULL_DESC = 3,
-  // ASC-sorted joins
-  INNER_ASC = 4, LEFT_ASC = 5, RIGHT_ASC = 6, FULL_ASC = 7,
-  // unsorted joins
-  INNER_UNSORTED = 8, LEFT_UNSORTED = 9
+  /**
+   * `[1,2] inner asc join [2,3] -> [{key: 2, left: 2, right: 2}]`
+   */
+  INNER_ASC = 4,
+  /**
+   *  `[1,2] left asc join [2,3] -> [{key: 1, left: 2, right: null}, {key: 2, left: 2, right: 2}]`
+   */
+  LEFT_ASC = 5,
+  /**
+   * `[1,2] right asc join [2,3] -> [{key: 2, left: 2, right: 2}, {key: 3, left: null, right: 3}]`
+   */
+  RIGHT_ASC = 6,
+  /**
+   * `[1,2] full asc join [2,3] -> [{key: 1, left: 1, right: null}, {key: 2, left: 2, right: 2}, {key: 3, left: null,
+   * right: 3}]`
+   */
+  FULL_ASC = 7,
+  /**
+   * `[2,1] inner desc join [3,2] -> [{key: 2, left: 2, right: 2}]`
+   */
+  INNER_DESC = 0,
+  /**
+   * `[2,1] left desc join [3,2] -> [{key: 2, left: 2, right: 2}, {key: 1, left: 2, right: null}]`
+   */
+  LEFT_DESC = 1,
+  /**
+   * `[2,1] right desc join [3,2] -> [{key: 3, left: 3, right: null}, {key: 2, left: 2, right: 2}]`
+   */
+  RIGHT_DESC = 2,
+  /**
+   * `[2,1] full desc join [3,2] -> [{key: 3, left: 3, right: null}, {key: 2, left: 2, right: 2}, {key: 1, left: 2,
+   * right: null}]`
+   */
+  FULL_DESC = 3,
+  /**
+   *`[1,3,2] inner unsorted join [2,1,4] -> [{key: 1, left: 2, right: 1}, {key: 2, left: 2, right: 2}]`
+   */
+  INNER_UNSORTED = 8,
+  /**
+   *  `[1,3,2] left unsorted join [2,1,4] -> [{key: 1, left: 2, right: 1}, {key: 3, left: null, right: 3}, {key: 2,
+   * left: 2, right: 2}]`
+   */
+  LEFT_UNSORTED = 9
 }
 
 /**
@@ -341,12 +378,18 @@ export class Stream<T> implements Iterable<T> {
    * element from joined stream, using join parameter that can either be a field, or a function.
    *
    * If using SORTED join type, it will ensure that keys from both set come in the specified order, otherwise will
+   *
    * raise an exception. This is the most intended usage of this operation as it won't need to pre-fetch all elements
-   * from second stream in memory.
+   * from second stream in memory. The output keys order is preserved, i.e. if join order is ascending, then join
+   * entries will be emitted with the keys being in ascending order.
    *
    * If using UNSORTED join type, it will pre-fetch all elements from second stream into a hash map before any join
    * entries can be emitted.
    *
+   * Keys are not required to be unique, for duplicate keys, join entries will be multiplied, like it happens in SQL:
+   * ```
+   * [1,2,2] left join [2,2,3] = [{1,null}, {2,2}, {2,2}, {2,2}, {2,2}]
+   * ```
    * Example of usage:
    * ```
    * let collectionA = [{a: 1, b: "val 1",}, {a: 2, b: "val 2",}, {a: 3, b: "val 3",}];
@@ -360,12 +403,16 @@ export class Stream<T> implements Iterable<T> {
    *   {key: 2, left: {a: 2, b: "val 2"}, right: {a: 2, b: "val b"}}
    * ]);
    * ```
-   * Parameters include :
-   * * `joinType`: (optional) join type such as INNER_DESC, LEFT_DESC, RIGHT_DESC, FULL_DESC.. (full list is TBD)
-   * * `commonKey`: (optional) common field that belongs to both streams elements, or a function; if provided, then next
-   * 2 will be ignored
-   * * `leftKey`: (optional) current (left) element field or a function to be used as a join key
-   * * `rightKey`: (optional) right element field or a function to be used as a join key
+   *
+   * Optional parameters:
+   *  * `commonKey?` - common field that belongs to both streams elements, or a function that can extract key from *T
+   * &#124; O*; if provided, next 2 will be ignored;
+   *  * `leftKey?`  - field that belongs to current (left) stream elements, or a function that can extract key from
+   * `T`. If not provided, then elements will be used as keys and are supposed to be primitive;
+   *  * `rightKey?` - field that belongs to other (right) stream elements, or a function that can extract key from `O`.
+   * If not provided, then elements will be used as keys and are supposed to be primitive;
+   *  * `joinType?` - join mode, default value is `JoinType.INNER_ASC` (see `JoinType` or README for more details);
+   *
    * @param other stream to join
    * @param params object with a structure like `{joinType?, commonKey?, leftKey?, rightKey?}`
    */

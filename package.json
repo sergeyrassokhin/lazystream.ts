@@ -1,6 +1,6 @@
 {
   "name": "lazystream.ts",
-  "version": "0.5.5",
+  "version": "0.5.6",
   "description": "LazyStream.TS provides an easy way to work with collections in FP-like and SQL-like styles.",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
