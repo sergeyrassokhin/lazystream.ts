@@ -503,14 +503,16 @@ export class Stream<T> implements Iterable<T> {
           while (!rightElement.done) {
             const rightKey = rightKeyFn(rightElement.value);
             if (rightKey === undefined) {
-              if (joinType === JoinType.RIGHT_DESC || joinType === JoinType.FULL_DESC) {
+              if (joinType === JoinType.RIGHT_DESC || joinType === JoinType.FULL_DESC ||
+                  joinType == JoinType.RIGHT_ASC || joinType == JoinType.FULL_ASC) {
                 yield joinResultFn(null, rightElement.value, null);
               }
             } else {
               rightKeyPrevious = checkOrder(rightKeyPrevious, rightKey, sortOrder);
               if ((sortOrder === SortOrder.DESC && safeCompare(leftKey, rightKey) < 0) ||
                   (sortOrder === SortOrder.ASC && safeCompare(leftKey, rightKey) > 0)) {
-                if (joinType === JoinType.RIGHT_DESC || joinType === JoinType.FULL_DESC) {
+                if (joinType === JoinType.RIGHT_DESC || joinType === JoinType.FULL_DESC ||
+                    joinType == JoinType.RIGHT_ASC || joinType == JoinType.FULL_ASC) {
                   yield joinResultFn(null, rightElement.value, rightKey);
                 }
               } else if (safeCompare(leftKey, rightKey) == 0) {
@@ -529,13 +531,15 @@ export class Stream<T> implements Iterable<T> {
             yield joinResultFn(left, right, leftKey);
           }
         } else {
-          if (joinType == JoinType.LEFT_DESC || joinType == JoinType.FULL_DESC) {
+          if (joinType == JoinType.LEFT_DESC || joinType == JoinType.FULL_DESC ||
+              joinType == JoinType.LEFT_ASC || joinType == JoinType.FULL_ASC) {
             yield  joinResultFn(left, null, leftKey);
           }
         }
       }
       // right iterator may still have some elements left
-      if (joinType == JoinType.RIGHT_DESC || joinType == JoinType.FULL_DESC) {
+      if (joinType == JoinType.RIGHT_DESC || joinType == JoinType.FULL_DESC ||
+          joinType == JoinType.RIGHT_ASC || joinType == JoinType.FULL_ASC) {
         while (!rightElement.done) {
           yield joinResultFn(null, rightElement.value, rightKeyFn(rightElement.value));
           rightElement = rightIter.next();
